@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo del tablero</title>
+  <link rel="stylesheet" href="/board-demo.css">
+</head>
+
+<body>
+  <main class="demo">
+    <h1><label id="message" aria-live="polite">Tablero demo</label></h1>
+    <div class="actions" aria-label="Acciones del tablero">
+      <button type="button" data-endpoint="/demo/action1">Acción 1</button>
+      <button type="button" data-endpoint="/demo/action2">Acción 2</button>
+      <button type="button" data-endpoint="/demo/action3">Acción 3</button>
+      <button type="button" data-endpoint="/demo/action4">Acción 4</button>
+    </div>
+  </main>
+
+  <div id="board"></div>
+
+  <script type="module">
+    import dispatcher from "./CommandDispatcher.js";
+    import BattleShipBoard from "./BattleShipBoard.js";
+
+    const message = document.getElementById("message");
+    // Config keys (urlInicio, anchoMaximo, ...) are defined by the course libraries
+    const view = dispatcher.registerView("board-demo", {
+      urlInicio: "/demo/init"
+    });
+
+    const board = new BattleShipBoard(
+      document.getElementById("board"),
+      dispatcher,
+      { anchoMaximo: 1000, altoMaximo: 1000, tamanoFuente: 12, tamanoIcono: 28 }
+    );
+
+    view.handler("showMessage", (parameter) => {
+      message.textContent = parameter;
+    });
+
+    document.querySelectorAll("[data-endpoint]").forEach((button) => {
+      button.addEventListener("click", () => {
+        dispatcher.submit(button.dataset.endpoint);
+      });
+    });
+
+    dispatcher.startView(view);
+  </script>
+</body>
+
+</html>

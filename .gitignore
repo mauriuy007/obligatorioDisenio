@@ -62,3 +62,16 @@ nbdist/
 ### Windows ###
 Thumbs.db
 Desktop.ini
+
+
+### AI ###
+.claude/
+CLAUDE.local.md
+
+### VS Code Java upgrade / modernize ###
+.github/java-upgrade/
+.github/modernize/
+
+### Entregables empaquetados ###
+*.zip
+*.rar
