@@ -1,12 +1,28 @@
 package com.example.battleship.model;
 
 public class Cell {
-    
-    private int xCoordinate;
-    private int yCoordinate;
 
-    public Cell(int xCoordinate, int yCoordinate) {
-        this.xCoordinate = xCoordinate;
-        this.yCoordinate = yCoordinate;
+    private int x;
+    private int y;
+
+    public Cell(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 }
