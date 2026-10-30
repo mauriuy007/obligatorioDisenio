@@ -10,6 +10,22 @@ public class BattlePresenter {
     
     @PostMapping("/connectedView")
     public Commands connectedView() {
+        return new Commands(wonBattles(), )
+    }
+
+    public Commands wonBattles() {
+
+    }
+
+    public Commands lostBattles() {
+
+    }
+
+    public Commands successRate() {
+
+    }
+
+    public Commands battleList() {
         
     }
 }
