@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sala de Operaciones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/sala-operaciones.css">
+</head>
+
+<body>
+  <!-- Iconos reutilizables -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="isla" viewBox="0 0 64 24">
+      <ellipse cx="32" cy="21" rx="30" ry="3" fill="#b9c9d6" />
+      <path d="M4 21 L18 9 L24 13 L32 3 L44 14 L50 10 L60 21 Z" fill="#5c7a5a" />
+      <path d="M32 3 L37 8 L33 10 L30 7 Z M18 9 L21 11 L17 13 Z" fill="#dfe7ea" />
+      <path d="M24 13 L32 21 L4 21 L18 9 Z" fill="#3f5a44" opacity="0.7" />
+    </symbol>
+  </svg>
+
+  <div class="escena">
+    <header class="encabezado">
+      <svg class="ancla" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="3" />
+        <path d="M24 12 V42 M14 18 H34 M6 28 C6 38 14 42 24 42 C34 42 42 38 42 28 M2 30 L6 26 L10 30 M38 30 L42 26 L46 30"
+          fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <div class="titulo">
+        <h1>Sala de Operaciones</h1>
+        <p>Supervisa. Planifica. Combate.</p>
+      </div>
+      <div class="lema">
+        <p>Cada batalla<br>nos acerca<br>a la victoria</p>
+        <svg class="buque" viewBox="0 0 160 50" aria-hidden="true">
+          <path d="M4 34 L156 34 L144 46 L16 46 Z M30 34 L36 24 L70 24 L74 16 L96 16 L100 8 L104 8 L106 16 L112 16 L116 24 L128 24 L132 34 Z M100 8 V0 M84 16 V6 M88 8 H80"
+            fill="currentColor" stroke="currentColor" stroke-width="2" />
+        </svg>
+      </div>
+    </header>
+
+    <main class="panel">
+      <p id="mensaje" class="mensaje" aria-live="polite"></p>
+
+      <section class="resumen" aria-label="Resumen de la campaña">
+        <div class="dato">
+          <svg class="icono" viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M9 4 H23 V12 C23 17 20 20 16 20 C12 20 9 17 9 12 Z M9 7 H4 C4 12 6 14 9 14 M23 7 H28 C28 12 26 14 23 14 M16 20 V25 M10 28 H22 L20 25 H12 Z"
+              fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+          </svg>
+          <div>
+            <span class="etiqueta">Total de batallas ganadas</span>
+            <span id="ganadas" class="valor ganadas">-</span>
+          </div>
+        </div>
+        <div class="dato">
+          <svg class="icono" viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M5 5 L27 27 M27 5 L5 27 M5 5 L5 10 M5 5 L10 5 M27 5 L27 10 M27 5 L22 5 M9 23 L5 27 M23 23 L27 27 M10 20 L12 22 M22 20 L20 22"
+              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+          </svg>
+          <div>
+            <span class="etiqueta">Total de batallas perdidas</span>
+            <span id="perdidas" class="valor perdidas">-</span>
+          </div>
+        </div>
+        <div class="dato">
+          <svg class="icono" viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M5 28 V20 H10 V28 Z M13 28 V13 H18 V28 Z M21 28 V5 H26 V28 Z" fill="currentColor" />
+          </svg>
+          <div>
+            <span class="etiqueta">Éxito de la campaña</span>
+            <span id="exito" class="valor exito">-</span>
+            <span id="exitoDetalle" class="detalle"></span>
+          </div>
+        </div>
+        <button type="button" id="nuevaBatalla" class="boton-nueva">
+          <span aria-hidden="true">+</span> Iniciar nueva batalla
+        </button>
+      </section>
+
+      <h2>
+        <svg class="timon" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="2.5" />
+          <circle cx="16" cy="16" r="3" fill="currentColor" />
+          <path d="M16 2 V30 M2 16 H30 M6 6 L26 26 M26 6 L6 26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+        Listado de batallas
+      </h2>
+
+      <div class="tabla">
+        <table>
+          <thead>
+            <tr>
+              <th>Lugar del combate</th>
+              <th>Dimensiones del océano</th>
+              <th>Estado</th>
+              <th>Integridad de la flota propia</th>
+              <th>Integridad de la flota enemiga</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="batallas"></tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer class="cita">
+      <p>“Grandes mares forjan grandes estrategas.”</p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import dispatcher from "./CommandDispatcher.js";
+
+    const mensaje = document.getElementById("mensaje");
+    const batallas = document.getElementById("batallas");
+    const clasesEstado = {
+      "Ganada": "ganada",
+      "Perdida": "perdida",
+      "En combate": "combate",
+      "En preparación": "preparacion"
+    };
+    let ganadas = 0;
+
+    const view = dispatcher.registerView("sala-operaciones", {
+      urlInicio: "/battle/connectedView",
+      onError: (status, texto) => {
+        mensaje.textContent = "Error " + status + ": " + texto;
+      },
+      onException: (texto) => {
+        mensaje.textContent = texto;
+      }
+    });
+
+    view.handler("wonBattles", (cantidad) => {
+      ganadas = cantidad;
+      document.getElementById("ganadas").textContent = cantidad;
+    });
+
+    view.handler("lostBattles", (cantidad) => {
+      document.getElementById("perdidas").textContent = cantidad;
+    });
+
+    view.handler("successRate", (porcentaje) => {
+      document.getElementById("exito").textContent = porcentaje + "%";
+    });
+
+    view.handler("battleList", (filas) => {
+      document.getElementById("exitoDetalle").textContent = "(" + ganadas + " de " + filas.length + " batallas)";
+      batallas.replaceChildren();
+
+      if (filas.length === 0) {
+        const vacia = document.createElement("tr");
+        const celda = document.createElement("td");
+        celda.colSpan = 6;
+        celda.className = "vacia";
+        celda.textContent = "No hay batallas";
+        vacia.append(celda);
+        batallas.append(vacia);
+        return;
+      }
+
+      filas.forEach((fila) => {
+        const tr = document.createElement("tr");
+
+        const lugar = document.createElement("td");
+        lugar.className = "lugar";
+        const isla = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        isla.setAttribute("class", "isla");
+        isla.setAttribute("viewBox", "0 0 64 24");
+        isla.setAttribute("aria-hidden", "true");
+        const uso = document.createElementNS("http://www.w3.org/2000/svg", "use");
+        uso.setAttribute("href", "#isla");
+        isla.append(uso);
+        const contenido = document.createElement("div");
+        contenido.append(isla, fila.place);
+        lugar.append(contenido);
+        tr.append(lugar);
+
+        const dimensiones = document.createElement("td");
+        dimensiones.className = "centrado";
+        dimensiones.textContent = fila.dimensions;
+        tr.append(dimensiones);
+
+        const estado = document.createElement("td");
+        const insignia = document.createElement("span");
+        insignia.className = "estado " + (clasesEstado[fila.status] || "");
+        insignia.textContent = fila.status;
+        estado.append(insignia);
+        tr.append(estado);
+
+        [fila.ownFleetIntegrity, fila.enemyFleetIntegrity].forEach((valor) => {
+          const td = document.createElement("td");
+          td.className = "centrado";
+          td.textContent = valor;
+          tr.append(td);
+        });
+
+        const acciones = document.createElement("td");
+        const entrar = document.createElement("button");
+        entrar.type = "button";
+        entrar.className = "boton-entrar";
+        entrar.textContent = "Entrar ›";
+        entrar.addEventListener("click", () => {
+          dispatcher.submit("/battle/enter", { place: fila.place });
+        });
+        acciones.append(entrar);
+        tr.append(acciones);
+
+        batallas.append(tr);
+      });
+    });
+
+    document.getElementById("nuevaBatalla").addEventListener("click", () => {
+      dispatcher.submit("/battle/newBattle");
+    });
+
+    dispatcher.startView(view);
+  </script>
+</body>
+
+</html>

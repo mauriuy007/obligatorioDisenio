@@ -6,8 +6,11 @@ import java.util.List;
 public class Battle {
 
     private String place;
+    private int width;
+    private int height;
     private List<Round> rounds = new ArrayList<>();
     private Fleet fleet;
+    private Fleet enemyFleet;
     private BattleStatus status;
 
     public String getPlace() {
@@ -30,6 +33,26 @@ public class Battle {
         return status.isLost();
     }
 
+    public String getStatusName() {
+        return status.getName();
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     public List<Round> getRounds() {
         return rounds;
     }
@@ -44,6 +67,14 @@ public class Battle {
 
     public void setFleet(Fleet fleet) {
         this.fleet = fleet;
+    }
+
+    public Fleet getEnemyFleet() {
+        return enemyFleet;
+    }
+
+    public void setEnemyFleet(Fleet enemyFleet) {
+        this.enemyFleet = enemyFleet;
     }
 
     public BattleStatus getStatus() {

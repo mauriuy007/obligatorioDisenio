@@ -1,31 +1,45 @@
 package uy.edu.ort.battleshipdemo.presenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController 
+import uy.edu.ort.battleshipdemo.Command;
+import uy.edu.ort.battleshipdemo.Commands;
+import uy.edu.ort.battleshipdemo.model.Battle;
+import uy.edu.ort.battleshipdemo.model.Facade;
+
+@RestController
 @RequestMapping("/battle")
 public class BattlePresenter {
-    
+
+    private final Facade facade = Facade.getInstance();
+
     @PostMapping("/connectedView")
     public Commands connectedView() {
-        return new Commands(wonBattles(), )
+        return Commands.create(wonBattles(), lostBattles(), successRate(), battleList());
     }
 
-    public Commands wonBattles() {
-
+    private Command wonBattles() {
+        return new Command("wonBattles", facade.getWonCount());
     }
 
-    public Commands lostBattles() {
-
+    private Command lostBattles() {
+        return new Command("lostBattles", facade.getLostCount());
     }
 
-    public Commands successRate() {
-
+    private Command successRate() {
+        return new Command("successRate", facade.getSuccessPercentage());
     }
 
-    public Commands battleList() {
-        
+    private Command battleList() {
+        List<BattleRowDto> rows = new ArrayList<>();
+        for (Battle battle : facade.getBattles()) {
+            rows.add(new BattleRowDto(battle));
+        }
+        return new Command("battleList", rows);
     }
 }
