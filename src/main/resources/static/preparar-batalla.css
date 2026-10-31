@@ -1,0 +1,208 @@
+/* Estilos propios de Preparar una nueva batalla; lo compartido está en comun.css */
+
+.encabezado {
+  padding-bottom: 2rem;
+}
+
+.volver {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  color: var(--azul);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.volver:hover {
+  text-decoration: underline;
+}
+
+.titulo-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-family: "Roboto Slab", Georgia, serif;
+  font-weight: 800;
+  font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+}
+
+.titulo-panel .timon {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.bajada {
+  margin: 0.25rem 0 1.25rem 3rem;
+  color: var(--tinta-suave);
+}
+
+.secciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: 1rem;
+}
+
+.seccion {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  background: #fbfaf6;
+  border: 1px solid var(--papel-borde);
+  border-radius: 6px;
+}
+
+.seccion-titulo {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.seccion-titulo h2 {
+  margin: 0;
+  font-family: "Roboto Slab", Georgia, serif;
+  font-size: 1.2rem;
+}
+
+.seccion-titulo p {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  color: var(--tinta-suave);
+}
+
+.seccion-icono {
+  width: 2.75rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  color: var(--marino);
+}
+
+label {
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+input,
+select {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #c9c4b6;
+  border-radius: 4px;
+  background: #fff;
+  color: var(--tinta);
+  font: inherit;
+}
+
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #e6a33b;
+  outline-offset: 1px;
+}
+
+.seccion > input,
+.seccion > select {
+  margin-bottom: 1.25rem;
+}
+
+.seccion > input.numero {
+  margin-bottom: 0.25rem;
+}
+
+.numero {
+  width: 5.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.ayuda {
+  margin: 0 0 1.25rem;
+  font-size: 0.85rem;
+  color: var(--tinta-suave);
+}
+
+/* Flota */
+
+.centrado {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.flota table {
+  margin-bottom: 1rem;
+}
+
+.flota th {
+  font-size: 0.85rem;
+}
+
+.flota td {
+  padding: 0.4rem 0.75rem;
+}
+
+.tipo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.barco {
+  width: 3.5rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+  color: var(--marino);
+}
+
+.flota .numero {
+  width: 4.5rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.nota {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1.25rem;
+  padding: 0.6rem 0.9rem;
+  background: #e3edf6;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.nota-icono {
+  display: inline-grid;
+  place-items: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--azul);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.flota .boton-principal {
+  align-self: flex-end;
+  margin-top: auto;
+}
+
+/* Pantallas angostas */
+
+@media (max-width: 1000px) {
+  .secciones {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .flota {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .secciones {
+    grid-template-columns: 1fr;
+  }
+
+  .bajada {
+    margin-left: 0;
+  }
+}

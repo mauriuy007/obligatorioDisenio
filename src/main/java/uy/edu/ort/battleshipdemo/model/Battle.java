@@ -3,7 +3,14 @@ package uy.edu.ort.battleshipdemo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import uy.edu.ort.battleshipdemo.exception.FleetException;
+import uy.edu.ort.battleshipdemo.exception.InvalidActionException;
+import uy.edu.ort.battleshipdemo.exception.OceanException;
+
 public class Battle {
+
+    public static final int MIN_CELLS = 6;
+    public static final int MAX_CELLS = 12;
 
     private String place;
     private int width;
@@ -12,6 +19,7 @@ public class Battle {
     private Fleet fleet;
     private Fleet enemyFleet;
     private BattleStatus status;
+    private Tactic tactic;
 
     public String getPlace() {
         return place;
@@ -31,6 +39,20 @@ public class Battle {
 
     public boolean isLost() {
         return status.isLost();
+    }
+
+    public void validate() throws InvalidActionException {
+        if (width < MIN_CELLS || width > MAX_CELLS) {
+            throw OceanException.invalidWidth(MIN_CELLS, MAX_CELLS);
+        }
+        if (height < MIN_CELLS || height > MAX_CELLS) {
+            throw OceanException.invalidHeight(MIN_CELLS, MAX_CELLS);
+        }
+        fleet.validate();
+        int oceanCells = width * height;
+        if (fleet.getTotalSize() * 4 >= oceanCells) {
+            throw FleetException.tooDense(fleet.getTotalSize(), oceanCells);
+        }
     }
 
     public String getStatusName() {
@@ -83,5 +105,13 @@ public class Battle {
 
     public void setStatus(BattleStatus status) {
         this.status = status;
+    }
+
+    public Tactic getTactic() {
+        return tactic;
+    }
+
+    public void setTactic(Tactic tactic) {
+        this.tactic = tactic;
     }
 }

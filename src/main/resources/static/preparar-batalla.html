@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preparar una nueva batalla</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/comun.css">
+  <link rel="stylesheet" href="/preparar-batalla.css">
+</head>
+
+<body>
+  <!-- Iconos reutilizables -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="barco" viewBox="0 0 64 20">
+      <path d="M2 13 H62 L56 19 H8 Z M12 13 L15 9 H28 L30 5 H38 L39 2 H41 L42 5 H46 L48 9 H52 L54 13 Z" fill="currentColor" />
+    </symbol>
+  </svg>
+
+  <div class="escena">
+    <header class="encabezado">
+      <svg class="ancla" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="3" />
+        <path d="M24 12 V42 M14 18 H34 M6 28 C6 38 14 42 24 42 C34 42 42 38 42 28 M2 30 L6 26 L10 30 M38 30 L42 26 L46 30"
+          fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <div class="titulo">
+        <p>Supervisa. Planifica. Combate.</p>
+      </div>
+      <div class="lema">
+        <p>Cada batalla<br>nos acerca<br>a la victoria</p>
+        <svg class="buque" viewBox="0 0 160 50" aria-hidden="true">
+          <path d="M4 34 L156 34 L144 46 L16 46 Z M30 34 L36 24 L70 24 L74 16 L96 16 L100 8 L104 8 L106 16 L112 16 L116 24 L128 24 L132 34 Z M100 8 V0 M84 16 V6 M88 8 H80"
+            fill="currentColor" stroke="currentColor" stroke-width="2" />
+        </svg>
+      </div>
+    </header>
+
+    <main class="panel">
+      <a class="volver" href="/sala-operaciones.html">‹ Volver a la sala de operaciones</a>
+
+      <h1 class="titulo-panel">
+        <svg class="timon" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="2.5" />
+          <circle cx="16" cy="16" r="3" fill="currentColor" />
+          <path d="M16 2 V30 M2 16 H30 M6 6 L26 26 M26 6 L6 26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+        Preparar una nueva batalla
+      </h1>
+      <p class="bajada">Configura el escenario, tu flota y la táctica del oponente. Luego podrás desplegar tus barcos en el tablero.</p>
+
+      <p id="mensaje" class="mensaje" role="alert"></p>
+
+      <div class="secciones">
+        <section class="seccion">
+          <header class="seccion-titulo">
+            <svg class="seccion-icono" viewBox="0 0 40 32" aria-hidden="true">
+              <path d="M2 30 L14 10 L20 18 L26 6 L38 30 Z" fill="#5c7a5a" />
+              <path d="M26 6 L30 13 L27 15 L24 11 Z M14 10 L16 14 L12 16 Z" fill="#dfe7ea" />
+              <path d="M2 30 L14 10 L20 18 L14 30 Z" fill="#3f5a44" />
+            </svg>
+            <div>
+              <h2>Lugar del combate</h2>
+              <p>Cada batalla tiene su propia historia.</p>
+            </div>
+          </header>
+
+          <label for="lugar">Nombre del combate</label>
+          <input id="lugar" type="text" autocomplete="off">
+
+          <label for="tactica">Táctica de juego del oponente</label>
+          <select id="tactica"></select>
+        </section>
+
+        <section class="seccion">
+          <header class="seccion-titulo">
+            <svg class="seccion-icono" viewBox="0 0 40 32" aria-hidden="true">
+              <path d="M2 8 C8 3 12 3 20 8 C28 13 32 13 38 8 M2 17 C8 12 12 12 20 17 C28 22 32 22 38 17 M2 26 C8 21 12 21 20 26 C28 31 32 31 38 26"
+                fill="none" stroke="#3a86c8" stroke-width="3.5" stroke-linecap="round" />
+            </svg>
+            <div>
+              <h2>Océano</h2>
+              <p>Define el tamaño del campo de batalla.</p>
+            </div>
+          </header>
+
+          <label for="ancho">Celdas horizontales (ancho)</label>
+          <input id="ancho" type="number" class="numero" value="10" min="6" max="12">
+          <p class="ayuda">Mínimo: 6</p>
+
+          <label for="alto">Celdas verticales (alto)</label>
+          <input id="alto" type="number" class="numero" value="10" min="6" max="12">
+          <p class="ayuda">Mínimo: 6</p>
+        </section>
+
+        <section class="seccion flota">
+          <header class="seccion-titulo">
+            <svg class="seccion-icono" viewBox="0 0 64 20" aria-hidden="true">
+              <use href="#barco" />
+            </svg>
+            <div>
+              <h2>Flota</h2>
+              <p>Define la cantidad de barcos de cada tipo.</p>
+            </div>
+          </header>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo de barco</th>
+                <th class="centrado">Tamaño (celdas)</th>
+                <th class="centrado">Cantidad (0 - 6)</th>
+              </tr>
+            </thead>
+            <tbody id="tiposDeBarco"></tbody>
+          </table>
+
+          <p class="nota">
+            <span class="nota-icono" aria-hidden="true">i</span>
+            Ingrese una cantidad entre 0 y 6 para cada tipo de barco.
+          </p>
+
+          <button type="button" id="continuar" class="boton-principal">Continuar <span aria-hidden="true">›</span></button>
+        </section>
+      </div>
+    </main>
+
+    <footer class="cita">
+      <p>“Grandes mares forjan grandes estrategas.”</p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import dispatcher from "./CommandDispatcher.js";
+
+    const mensaje = document.getElementById("mensaje");
+    const tactica = document.getElementById("tactica");
+    const tiposDeBarco = document.getElementById("tiposDeBarco");
+    const cantidades = new Map();
+
+    const view = dispatcher.registerView("preparar-batalla", {
+      urlInicio: "/battle/prepareBattleView",
+      onError: (status, texto) => {
+        mensaje.textContent = "Error " + status + ": " + texto;
+      },
+      onException: (texto) => {
+        mensaje.textContent = texto;
+      }
+    });
+
+    view.handler("tactics", (nombres) => {
+      tactica.replaceChildren();
+      nombres.forEach((nombre) => {
+        const opcion = document.createElement("option");
+        opcion.value = nombre;
+        opcion.textContent = nombre;
+        tactica.append(opcion);
+      });
+    });
+
+    view.handler("boatTypes", (tipos) => {
+      tiposDeBarco.replaceChildren();
+      cantidades.clear();
+
+      tipos.forEach((tipo) => {
+        const tr = document.createElement("tr");
+
+        const nombre = document.createElement("td");
+        const contenido = document.createElement("div");
+        contenido.className = "tipo";
+        const icono = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        icono.setAttribute("class", "barco");
+        icono.setAttribute("viewBox", "0 0 64 20");
+        icono.setAttribute("aria-hidden", "true");
+        const uso = document.createElementNS("http://www.w3.org/2000/svg", "use");
+        uso.setAttribute("href", "#barco");
+        icono.append(uso);
+        contenido.append(icono, tipo.name);
+        nombre.append(contenido);
+
+        const tamano = document.createElement("td");
+        tamano.className = "centrado";
+        tamano.textContent = tipo.size;
+
+        const cantidad = document.createElement("td");
+        cantidad.className = "centrado";
+        const input = document.createElement("input");
+        input.type = "number";
+        input.className = "numero";
+        input.min = 0;
+        input.max = 6;
+        input.value = 0;
+        input.setAttribute("aria-label", "Cantidad de " + tipo.name);
+        cantidad.append(input);
+        cantidades.set(tipo.name, input);
+
+        tr.append(nombre, tamano, cantidad);
+        tiposDeBarco.append(tr);
+      });
+    });
+
+    view.handler("goTo", (url) => {
+      location.href = url;
+    });
+
+    document.getElementById("continuar").addEventListener("click", () => {
+      mensaje.textContent = "";
+      const datos = {
+        place: document.getElementById("lugar").value,
+        tactic: tactica.value,
+        width: document.getElementById("ancho").value,
+        height: document.getElementById("alto").value
+      };
+      cantidades.forEach((input, nombre) => {
+        datos["quantities[" + nombre + "]"] = input.value;
+      });
+      dispatcher.submit("/battle/prepareBattle", datos);
+    });
+
+    dispatcher.startView(view);
+  </script>
+</body>
+
+</html>

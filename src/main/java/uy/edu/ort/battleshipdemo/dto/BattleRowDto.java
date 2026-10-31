@@ -1,4 +1,4 @@
-package uy.edu.ort.battleshipdemo.presenter;
+package uy.edu.ort.battleshipdemo.dto;
 
 import lombok.Data;
 import uy.edu.ort.battleshipdemo.model.Battle;

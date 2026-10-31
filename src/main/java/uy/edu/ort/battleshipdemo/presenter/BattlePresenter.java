@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import uy.edu.ort.battleshipdemo.Command;
 import uy.edu.ort.battleshipdemo.Commands;
+import uy.edu.ort.battleshipdemo.dto.BattleRowDto;
 import uy.edu.ort.battleshipdemo.model.Battle;
 import uy.edu.ort.battleshipdemo.model.Facade;
 

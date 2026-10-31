@@ -1,5 +1,6 @@
 package uy.edu.ort.battleshipdemo.model;
 
-public class Tactic {
+public abstract class Tactic {
 
+    public abstract String getName();
 }
