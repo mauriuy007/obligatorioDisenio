@@ -3,33 +3,49 @@ package uy.edu.ort.battleshipdemo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 public class Boat {
 
-    private boolean sunk;
+    @Getter
     private BoatType type;
     private List<Cell> cells = new ArrayList<>();
 
-    public boolean isSunk() {
-        return sunk;
-    }
-
-    public void setSunk(boolean sunk) {
-        this.sunk = sunk;
-    }
-
-    public BoatType getType() {
-        return type;
-    }
-
-    public void setType(BoatType type) {
+    public Boat(BoatType type) {
         this.type = type;
     }
 
-    public List<Cell> getCells() {
-        return cells;
+    public int getSize() {
+        return type.getSize();
     }
 
-    public void setCells(List<Cell> cells) {
-        this.cells = cells;
+    public void addCell(Cell cell) {
+        cells.add(cell);
+    }
+
+    public void clearCells() {
+        cells.clear();
+    }
+
+    public boolean isPlaced() {
+        return !cells.isEmpty();
+    }
+
+    public boolean isSunk() {
+        return isPlaced() && getHits() == getSize();
+    }
+
+    public int getHealthyParts() {
+        return getSize() - getHits();
+    }
+
+    private int getHits() {
+        int hits = 0;
+        for (Cell cell : cells) {
+            if (cell.isShot()) {
+                hits++;
+            }
+        }
+        return hits;
     }
 }

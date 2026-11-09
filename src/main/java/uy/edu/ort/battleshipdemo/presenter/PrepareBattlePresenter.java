@@ -1,56 +1,62 @@
 package uy.edu.ort.battleshipdemo.presenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpSession;
 import uy.edu.ort.battleshipdemo.Command;
 import uy.edu.ort.battleshipdemo.Commands;
+import uy.edu.ort.battleshipdemo.dto.BattleDto;
+import uy.edu.ort.battleshipdemo.dto.BattleHeaderDto;
 import uy.edu.ort.battleshipdemo.dto.BoatTypeDto;
-import uy.edu.ort.battleshipdemo.dto.PrepareBattleDto;
-import uy.edu.ort.battleshipdemo.exception.InvalidActionException;
-import uy.edu.ort.battleshipdemo.model.BoatType;
+import uy.edu.ort.battleshipdemo.model.Battle;
+import uy.edu.ort.battleshipdemo.model.BattleshipException;
 import uy.edu.ort.battleshipdemo.model.Facade;
-import uy.edu.ort.battleshipdemo.model.Tactic;
+import uy.edu.ort.battleshipdemo.model.TacticType;
 
 @RestController
-@RequestMapping("/battle")
+@RequestMapping("/prepareBattle")
+@Scope("session")
 public class PrepareBattlePresenter {
 
-    private final Facade facade = Facade.getInstance();
+    private Facade facade;
+    private List<TacticType> tacticTypes;
 
-    @PostMapping("/prepareBattleView")
-    public Commands prepareBattleView() {
-        return Commands.create(tactics(), boatTypes());
+    public PrepareBattlePresenter(Facade facade) {
+        this.facade = facade;
     }
 
-    @PostMapping("/prepareBattle")
-    public Commands prepareBattle(PrepareBattleDto form) throws InvalidActionException {
-        facade.createBattle(form.getPlace(), form.getTactic(), valueOrZero(form.getWidth()),
-                valueOrZero(form.getHeight()), form.getQuantities());
-        return Commands.create(new Command("goTo", "/sala-operaciones.html"));
+    @PostMapping("/connectedView")
+    public Commands connectedView() {
+        return Commands.create(tacticTypes(), boatTypes());
     }
 
-    private int valueOrZero(Integer value) {
-        return value == null ? 0 : value;
+    // quantities trae la cantidad de cada tipo de barco, en el mismo orden en que se enviaron a la vista.
+    @PostMapping("/continue")
+    public Commands continuePreparation(HttpSession session, @RequestParam String place,
+            @RequestParam int posTactic, @RequestParam int width, @RequestParam int height,
+            @RequestParam List<Integer> quantities) throws BattleshipException {
+        TacticType tacticType = tacticTypes.get(posTactic);
+        Battle battle = facade.createBattle(place, tacticType, width, height, quantities);
+        session.setAttribute("battle", new BattleDto(battle));
+        return Commands.create(preparedBattle(battle));
     }
 
-    private Command tactics() {
-        List<String> names = new ArrayList<>();
-        for (Tactic tactic : facade.getTactics()) {
-            names.add(tactic.getName());
-        }
-        return new Command("tactics", names);
+    private Command preparedBattle(Battle battle) {
+        return new Command("preparedBattle", new BattleHeaderDto(battle));
+    }
+
+    private Command tacticTypes() {
+        tacticTypes = facade.getTacticTypes();
+        return new Command("tacticTypes", tacticTypes);
     }
 
     private Command boatTypes() {
-        List<BoatTypeDto> rows = new ArrayList<>();
-        for (BoatType boatType : facade.getBoatTypes()) {
-            rows.add(new BoatTypeDto(boatType));
-        }
-        return new Command("boatTypes", rows);
+        return new Command("boatTypes", BoatTypeDto.fromList(facade.getBoatTypes()));
     }
 }

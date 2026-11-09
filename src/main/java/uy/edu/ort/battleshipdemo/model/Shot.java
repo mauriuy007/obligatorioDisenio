@@ -4,11 +4,7 @@ public class Shot {
 
     private Cell cell;
 
-    public Cell getCell() {
-        return cell;
-    }
-
-    public void setCell(Cell cell) {
+    public Shot(Cell cell) {
         this.cell = cell;
     }
 }

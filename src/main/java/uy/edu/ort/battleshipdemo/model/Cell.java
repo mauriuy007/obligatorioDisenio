@@ -1,28 +1,41 @@
 package uy.edu.ort.battleshipdemo.model;
 
+import lombok.Getter;
+
+// row es la coordenada vertical y column la horizontal; (0, 0) es la celda inferior izquierda.
 public class Cell {
 
-    private int x;
-    private int y;
+    @Getter
+    private int row;
+    @Getter
+    private int column;
+    @Getter
+    private Boat boat;
+    @Getter
+    private boolean shot;
 
-    public Cell(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Cell(int row, int column) {
+        this.row = row;
+        this.column = column;
     }
 
-    public int getX() {
-        return x;
+    public void setBoat(Boat boat) {
+        this.boat = boat;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public boolean hasBoat() {
+        return boat != null;
     }
 
-    public int getY() {
-        return y;
+    public void shoot() {
+        this.shot = true;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public boolean isHit() {
+        return shot && hasBoat();
+    }
+
+    public boolean isOpenHit() {
+        return isHit() && !boat.isSunk();
     }
 }

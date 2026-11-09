@@ -5,16 +5,8 @@ public class Round {
     private Shot humanShot;
     private Shot machineShot;
 
-    public Shot getHumanShot() {
-        return humanShot;
-    }
-
-    public void setHumanShot(Shot humanShot) {
+    public Round(Shot humanShot) {
         this.humanShot = humanShot;
-    }
-
-    public Shot getMachineShot() {
-        return machineShot;
     }
 
     public void setMachineShot(Shot machineShot) {

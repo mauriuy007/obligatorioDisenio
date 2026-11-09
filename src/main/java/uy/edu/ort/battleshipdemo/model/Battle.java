@@ -2,35 +2,91 @@ package uy.edu.ort.battleshipdemo.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import uy.edu.ort.battleshipdemo.exception.FleetException;
-import uy.edu.ort.battleshipdemo.exception.InvalidActionException;
-import uy.edu.ort.battleshipdemo.exception.OceanException;
+import lombok.Getter;
 
+// Las acciones de la batalla (iniciar combate, disparar) las resuelve su estado (patrón State).
 public class Battle {
 
-    public static final int MIN_CELLS = 6;
-    public static final int MAX_CELLS = 12;
-
+    @Getter
     private String place;
+    @Getter
     private int width;
+    @Getter
     private int height;
+    @Getter
+    private Player human;
+    @Getter
+    private Machine machine;
     private List<Round> rounds = new ArrayList<>();
-    private Fleet fleet;
-    private Fleet enemyFleet;
     private BattleStatus status;
-    private Tactic tactic;
 
-    public String getPlace() {
-        return place;
+    public Battle(String place, TacticType tacticType, int width, int height, Fleet humanFleet, Fleet machineFleet) {
+        this.place = place;
+        this.width = width;
+        this.height = height;
+        this.human = new Player(humanFleet, width, height);
+        this.machine = new Machine(machineFleet, width, height, TacticFactory.createTactic(tacticType));
+        this.status = new PreparingStatus(this);
     }
 
-    public void setPlace(String place) {
-        this.place = place;
+    public void validate() throws BattleshipException {
+        Fleet fleet = human.getFleet();
+        fleet.validate();
+        int oceanCells = width * height;
+        if (fleet.getTotalSize() * 4 >= oceanCells) {
+            throw new BattleshipException("La flota no entra en el océano: ocupa " + fleet.getTotalSize() + " de "
+                    + oceanCells + " celdas y debe ocupar menos del 25%");
+        }
+    }
+
+    public void deployMachineFleet(Random random) {
+        machine.deployRandomly(random);
+    }
+
+    public void changeStatus(StatusType type) {
+        this.status = BattleStatusFactory.createStatus(type, this);
+    }
+
+    public void startCombat() throws BattleshipException {
+        status.startCombat();
+    }
+
+    // Lo invoca PreparingStatus.
+    protected void doStartCombat() throws BattleshipException {
+        if (!human.isDeployed()) {
+            throw new BattleshipException("Debe posicionar todos sus barcos primero");
+        }
+    }
+
+    public void fire(int row, int column) throws BattleshipException {
+        status.fire(row, column);
+    }
+
+    // Lo invoca InCombatStatus: disparo del humano y, si la flota enemiga sigue a flote, respuesta de la máquina.
+    protected void doFire(int row, int column) throws BattleshipException {
+        Round round = new Round(new Shot(machine.receiveShot(row, column)));
+        rounds.add(round);
+        if (!machine.isDefeated()) {
+            round.setMachineShot(new Shot(machine.fireAt(human)));
+        }
     }
 
     public boolean hasPlace(String place) {
         return this.place != null && this.place.equalsIgnoreCase(place);
+    }
+
+    public int getRoundNumber() {
+        return status.roundNumber(rounds.size());
+    }
+
+    public String getStatusName() {
+        return status.getName();
+    }
+
+    public boolean isPreparing() {
+        return status.isPreparing();
     }
 
     public boolean isWon() {
@@ -41,77 +97,7 @@ public class Battle {
         return status.isLost();
     }
 
-    public void validate() throws InvalidActionException {
-        if (width < MIN_CELLS || width > MAX_CELLS) {
-            throw OceanException.invalidWidth(MIN_CELLS, MAX_CELLS);
-        }
-        if (height < MIN_CELLS || height > MAX_CELLS) {
-            throw OceanException.invalidHeight(MIN_CELLS, MAX_CELLS);
-        }
-        fleet.validate();
-        int oceanCells = width * height;
-        if (fleet.getTotalSize() * 4 >= oceanCells) {
-            throw FleetException.tooDense(fleet.getTotalSize(), oceanCells);
-        }
-    }
-
-    public String getStatusName() {
-        return status.getName();
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public List<Round> getRounds() {
-        return rounds;
-    }
-
-    public void setRounds(List<Round> rounds) {
-        this.rounds = rounds;
-    }
-
-    public Fleet getFleet() {
-        return fleet;
-    }
-
-    public void setFleet(Fleet fleet) {
-        this.fleet = fleet;
-    }
-
-    public Fleet getEnemyFleet() {
-        return enemyFleet;
-    }
-
-    public void setEnemyFleet(Fleet enemyFleet) {
-        this.enemyFleet = enemyFleet;
-    }
-
-    public BattleStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(BattleStatus status) {
-        this.status = status;
-    }
-
-    public Tactic getTactic() {
-        return tactic;
-    }
-
-    public void setTactic(Tactic tactic) {
-        this.tactic = tactic;
+    public boolean revealsEnemyFleet() {
+        return status.revealsEnemyFleet();
     }
 }

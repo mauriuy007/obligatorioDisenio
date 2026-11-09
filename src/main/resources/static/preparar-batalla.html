@@ -40,7 +40,7 @@
     </header>
 
     <main class="panel">
-      <a class="volver" href="/sala-operaciones.html">‹ Volver a la sala de operaciones</a>
+      <a class="volver" href="/">‹ Volver a la sala de operaciones</a>
 
       <h1 class="titulo-panel">
         <svg class="timon" viewBox="0 0 32 32" aria-hidden="true">
@@ -139,10 +139,10 @@
     const mensaje = document.getElementById("mensaje");
     const tactica = document.getElementById("tactica");
     const tiposDeBarco = document.getElementById("tiposDeBarco");
-    const cantidades = new Map();
+    const cantidades = [];
 
     const view = dispatcher.registerView("preparar-batalla", {
-      urlInicio: "/battle/prepareBattleView",
+      urlInicio: "/prepareBattle/connectedView",
       onError: (status, texto) => {
         mensaje.textContent = "Error " + status + ": " + texto;
       },
@@ -151,19 +151,19 @@
       }
     });
 
-    view.handler("tactics", (nombres) => {
-      tactica.replaceChildren();
-      nombres.forEach((nombre) => {
+    view.handler("tacticTypes", (tipos) => {
+      tactica.innerHTML = "";
+      tipos.forEach((tipo, posicion) => {
         const opcion = document.createElement("option");
-        opcion.value = nombre;
-        opcion.textContent = nombre;
+        opcion.value = posicion;
+        opcion.textContent = tipo.name;
         tactica.append(opcion);
       });
     });
 
     view.handler("boatTypes", (tipos) => {
-      tiposDeBarco.replaceChildren();
-      cantidades.clear();
+      tiposDeBarco.innerHTML = "";
+      cantidades.length = 0;
 
       tipos.forEach((tipo) => {
         const tr = document.createElement("tr");
@@ -195,29 +195,31 @@
         input.value = 0;
         input.setAttribute("aria-label", "Cantidad de " + tipo.name);
         cantidad.append(input);
-        cantidades.set(tipo.name, input);
+        cantidades.push(input);
 
         tr.append(nombre, tamano, cantidad);
         tiposDeBarco.append(tr);
       });
     });
 
-    view.handler("goTo", (url) => {
-      location.href = url;
+    view.handler("preparedBattle", (batalla) => {
+      location.href = "/desplegar-flota.html";
     });
 
     document.getElementById("continuar").addEventListener("click", () => {
       mensaje.textContent = "";
-      const datos = {
-        place: document.getElementById("lugar").value,
-        tactic: tactica.value,
-        width: document.getElementById("ancho").value,
-        height: document.getElementById("alto").value
-      };
-      cantidades.forEach((input, nombre) => {
-        datos["quantities[" + nombre + "]"] = input.value;
+      // Cantidades en el mismo orden en que llegaron los tipos de barco, ej: "1,0,2".
+      const valores = [];
+      cantidades.forEach((input) => {
+        valores.push(input.value || 0);
       });
-      dispatcher.submit("/battle/prepareBattle", datos);
+      dispatcher.submit("/prepareBattle/continue", {
+        place: document.getElementById("lugar").value,
+        posTactic: tactica.value,
+        width: document.getElementById("ancho").value || 0,
+        height: document.getElementById("alto").value || 0,
+        quantities: valores.join(",")
+      });
     });
 
     dispatcher.startView(view);

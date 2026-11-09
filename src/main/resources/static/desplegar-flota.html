@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Desplegando la flota</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/comun.css">
+  <link rel="stylesheet" href="/preparar-batalla.css">
+  <link rel="stylesheet" href="/sala-operaciones.css">
+</head>
+
+<body>
+  <div class="escena">
+    <header class="encabezado">
+      <svg class="ancla" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="3" />
+        <path d="M24 12 V42 M14 18 H34 M6 28 C6 38 14 42 24 42 C34 42 42 38 42 28 M2 30 L6 26 L10 30 M38 30 L42 26 L46 30"
+          fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <div class="titulo">
+        <p>Supervisa. Planifica. Combate.</p>
+      </div>
+      <div class="lema">
+        <p>Cada batalla<br>nos acerca<br>a la victoria</p>
+        <svg class="buque" viewBox="0 0 160 50" aria-hidden="true">
+          <path d="M4 34 L156 34 L144 46 L16 46 Z M30 34 L36 24 L70 24 L74 16 L96 16 L100 8 L104 8 L106 16 L112 16 L116 24 L128 24 L132 34 Z M100 8 V0 M84 16 V6 M88 8 H80"
+            fill="currentColor" stroke="currentColor" stroke-width="2" />
+        </svg>
+      </div>
+    </header>
+
+    <main class="panel">
+      <a class="volver" href="/">‹ Volver a la sala de operaciones</a>
+
+      <h1 class="titulo-panel">
+        <svg class="timon" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="2.5" />
+          <circle cx="16" cy="16" r="3" fill="currentColor" />
+          <path d="M16 2 V30 M2 16 H30 M6 6 L26 26 M26 6 L6 26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+        Desplegando la flota
+      </h1>
+      <p class="bajada">Lugar del combate: <strong id="lugar">-</strong> · Estado: <span id="estado" class="estado">-</span></p>
+      <p class="bajada">Próximamente: ubicá tus barcos en tus aguas propias.</p>
+
+      <p id="mensaje" class="mensaje" role="alert"></p>
+    </main>
+  </div>
+
+  <script type="module">
+    import dispatcher from "./CommandDispatcher.js";
+
+    const mensaje = document.getElementById("mensaje");
+    const clasesEstado = {
+      "Ganada": "ganada",
+      "Perdida": "perdida",
+      "En combate": "combate",
+      "En preparación": "preparacion"
+    };
+
+    const view = dispatcher.registerView("desplegar-flota", {
+      urlInicio: "/deployFleet/connectedView",
+      onError: (status, texto) => {
+        mensaje.textContent = "Error " + status + ": " + texto;
+      },
+      onException: (texto) => {
+        mensaje.textContent = texto;
+      }
+    });
+
+    view.handler("battleNotSelected", () => {
+      location.href = "/";
+    });
+
+    view.handler("battleHeader", (batalla) => {
+      document.getElementById("lugar").textContent = batalla.place;
+      const estado = document.getElementById("estado");
+      estado.textContent = batalla.status;
+      estado.className = "estado " + (clasesEstado[batalla.status] || "");
+    });
+
+    dispatcher.startView(view);
+  </script>
+</body>
+
+</html>

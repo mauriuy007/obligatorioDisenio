@@ -1,31 +1,23 @@
 package uy.edu.ort.battleshipdemo.model;
 
 import java.util.List;
-import java.util.Map;
-
-import uy.edu.ort.battleshipdemo.exception.BattleException;
-import uy.edu.ort.battleshipdemo.exception.InvalidActionException;
 
 public class Facade {
 
-    private static final Facade instance = new Facade();
+    private static Facade instance;
 
     private BattleSystem battleSystem = new BattleSystem();
 
-    private Facade() {
-    }
-
     public static Facade getInstance() {
+        if (instance == null) {
+            instance = new Facade();
+        }
         return instance;
     }
 
-    public void addBattle(Battle battle) throws BattleException {
-        battleSystem.addBattle(battle);
-    }
-
-    public Battle createBattle(String place, String tacticName, int width, int height,
-            Map<String, Integer> quantities) throws InvalidActionException {
-        return battleSystem.createBattle(place, tacticName, width, height, quantities);
+    public Battle createBattle(String place, TacticType tacticType, int width, int height,
+            List<Integer> quantities) throws BattleshipException {
+        return battleSystem.createBattle(place, tacticType, width, height, quantities);
     }
 
     public List<BoatType> getBoatTypes() {
@@ -36,16 +28,20 @@ public class Facade {
         battleSystem.addBoatType(boatType);
     }
 
-    public List<Tactic> getTactics() {
-        return battleSystem.getTactics();
+    public List<TacticType> getTacticTypes() {
+        return battleSystem.getTacticTypes();
     }
 
-    public void addTactic(Tactic tactic) {
-        battleSystem.addTactic(tactic);
+    public void addTacticType(TacticType tacticType) {
+        battleSystem.addTacticType(tacticType);
     }
 
     public List<Battle> getBattles() {
         return battleSystem.getBattles();
+    }
+
+    public Battle getBattle(String place) throws BattleshipException {
+        return battleSystem.getBattle(place);
     }
 
     public int getWonCount() {

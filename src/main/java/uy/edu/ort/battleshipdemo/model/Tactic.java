@@ -1,6 +1,9 @@
 package uy.edu.ort.battleshipdemo.model;
 
-public abstract class Tactic {
+// Patrón Strategy: cada táctica decide a qué celda dispara la máquina. Las crea TacticFactory.
+public interface Tactic {
 
-    public abstract String getName();
+    public String getName();
+
+    public Cell chooseTarget(Ocean ocean) throws BattleshipException;
 }

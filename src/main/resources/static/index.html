@@ -124,10 +124,9 @@
       "En combate": "combate",
       "En preparación": "preparacion"
     };
-    let ganadas = 0;
 
     const view = dispatcher.registerView("sala-operaciones", {
-      urlInicio: "/battle/connectedView",
+      urlInicio: "/operationsRoom/connectedView",
       onError: (status, texto) => {
         mensaje.textContent = "Error " + status + ": " + texto;
       },
@@ -137,7 +136,6 @@
     });
 
     view.handler("wonBattles", (cantidad) => {
-      ganadas = cantidad;
       document.getElementById("ganadas").textContent = cantidad;
     });
 
@@ -149,9 +147,12 @@
       document.getElementById("exito").textContent = porcentaje + "%";
     });
 
+    view.handler("successDetail", (texto) => {
+      document.getElementById("exitoDetalle").textContent = texto;
+    });
+
     view.handler("battleList", (filas) => {
-      document.getElementById("exitoDetalle").textContent = "(" + ganadas + " de " + filas.length + " batallas)";
-      batallas.replaceChildren();
+      batallas.innerHTML = "";
 
       if (filas.length === 0) {
         const vacia = document.createElement("tr");
@@ -164,7 +165,7 @@
         return;
       }
 
-      filas.forEach((fila) => {
+      filas.forEach((fila, posicion) => {
         const tr = document.createElement("tr");
 
         const lugar = document.createElement("td");
@@ -206,13 +207,17 @@
         entrar.className = "boton-entrar";
         entrar.textContent = "Entrar ›";
         entrar.addEventListener("click", () => {
-          dispatcher.submit("/battle/enter", { place: fila.place });
+          dispatcher.submit("/operationsRoom/enter", { posBattle: posicion });
         });
         acciones.append(entrar);
         tr.append(acciones);
 
         batallas.append(tr);
       });
+    });
+
+    view.handler("selectedBattle", (batalla) => {
+      location.href = batalla.preparing ? "/desplegar-flota.html" : "/librar-batalla.html";
     });
 
     document.getElementById("nuevaBatalla").addEventListener("click", () => {

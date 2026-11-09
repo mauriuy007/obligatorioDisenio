@@ -1,4 +1,4 @@
-package uy.edu.ort.battlefield;
+package uy.edu.ort.battleshipdemo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
