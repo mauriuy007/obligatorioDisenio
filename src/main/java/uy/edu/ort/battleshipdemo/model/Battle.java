@@ -5,9 +5,15 @@ import java.util.List;
 import java.util.Random;
 
 import lombok.Getter;
+import uy.edu.ort.battleshipdemo.observer.Observable;
 
-// Las acciones de la batalla (iniciar combate, disparar) las resuelve su estado (patrón State).
-public class Battle {
+public class Battle extends Observable {
+
+    public enum Events {
+        BOAT_PLACED,
+        COMBAT_STARTED,
+        ROUND_PLAYED
+    }
 
     @Getter
     private String place;
@@ -49,22 +55,32 @@ public class Battle {
         this.status = BattleStatusFactory.createStatus(type, this);
     }
 
-    public void startCombat() throws BattleshipException {
-        status.startCombat();
+    public void placeBoat(int row, int column, boolean horizontal) throws BattleshipException {
+        status.placeBoat(row, column, horizontal);
+        notifyObservers(Events.BOAT_PLACED);
     }
 
-    // Lo invoca PreparingStatus.
+    protected void doPlaceBoat(int row, int column, boolean horizontal) throws BattleshipException {
+        human.placeNextBoat(row, column, horizontal);
+    }
+
+    public void startCombat() throws BattleshipException {
+        status.startCombat();
+        notifyObservers(Events.COMBAT_STARTED);
+    }
+
     protected void doStartCombat() throws BattleshipException {
         if (!human.isDeployed()) {
             throw new BattleshipException("Debe posicionar todos sus barcos primero");
         }
     }
 
-    public void fire(int row, int column) throws BattleshipException {
+    // Si dos sesiones disparan a la vez, gana el primer disparo de la ronda.
+    public synchronized void fire(int row, int column) throws BattleshipException {
         status.fire(row, column);
+        notifyObservers(Events.ROUND_PLAYED);
     }
 
-    // Lo invoca InCombatStatus: disparo del humano y, si la flota enemiga sigue a flote, respuesta de la máquina.
     protected void doFire(int row, int column) throws BattleshipException {
         Round round = new Round(new Shot(machine.receiveShot(row, column)));
         rounds.add(round);

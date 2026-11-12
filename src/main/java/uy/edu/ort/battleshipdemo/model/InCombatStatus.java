@@ -17,6 +17,11 @@ public class InCombatStatus extends BattleStatus {
     }
 
     @Override
+    public void placeBoat(int row, int column, boolean horizontal) throws BattleshipException {
+        throw new BattleshipException("La batalla ya comenzó, no se pueden mover los barcos");
+    }
+
+    @Override
     public void fire(int row, int column) throws BattleshipException {
         getBattle().doFire(row, column);
         if (getBattle().getMachine().isDefeated()) {

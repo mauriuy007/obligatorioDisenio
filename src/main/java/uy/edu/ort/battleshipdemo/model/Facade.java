@@ -2,11 +2,19 @@ package uy.edu.ort.battleshipdemo.model;
 
 import java.util.List;
 
-public class Facade {
+import uy.edu.ort.battleshipdemo.observer.Observable;
+import uy.edu.ort.battleshipdemo.observer.Observer;
+
+public class Facade extends Observable implements Observer {
 
     private static Facade instance;
 
     private BattleSystem battleSystem = new BattleSystem();
+
+    public enum Events {
+        NEW_BATTLE,
+        BATTLE_UPDATED
+    }
 
     public static Facade getInstance() {
         if (instance == null) {
@@ -17,7 +25,10 @@ public class Facade {
 
     public Battle createBattle(String place, TacticType tacticType, int width, int height,
             List<Integer> quantities) throws BattleshipException {
-        return battleSystem.createBattle(place, tacticType, width, height, quantities);
+        Battle battle = battleSystem.createBattle(place, tacticType, width, height, quantities);
+        battle.addObserver(this);
+        notifyObservers(Events.NEW_BATTLE);
+        return battle;
     }
 
     public List<BoatType> getBoatTypes() {
@@ -54,5 +65,12 @@ public class Facade {
 
     public int getSuccessPercentage() {
         return battleSystem.getSuccessPercentage();
+    }
+
+    @Override
+    public void update(Observable source, Object event) {
+        if (event.equals(Battle.Events.COMBAT_STARTED) || event.equals(Battle.Events.ROUND_PLAYED)) {
+            notifyObservers(Events.BATTLE_UPDATED);
+        }
     }
 }

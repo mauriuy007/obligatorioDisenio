@@ -97,7 +97,6 @@ public class Ocean {
         }
     }
 
-    // Si algún barco no entra, se saca toda la flota y se vuelve a intentar.
     public void placeRandomly(Fleet fleet, Random random) {
         while (!tryPlaceRandomly(fleet, random)) {
             clear();
@@ -124,7 +123,6 @@ public class Ocean {
         return positions;
     }
 
-    // Usa las mismas reglas que placeBoat.
     private void addIfValid(Boat boat, Position position, List<Position> positions) {
         try {
             validatePlacement(boat, position);

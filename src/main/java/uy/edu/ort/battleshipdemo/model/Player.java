@@ -24,6 +24,10 @@ public class Player {
         ocean.placeBoat(boat, row, column, horizontal);
     }
 
+    public void placeNextBoat(int row, int column, boolean horizontal) throws BattleshipException {
+        placeBoat(fleet.getNextBoatToPlace(), row, column, horizontal);
+    }
+
     public void deployRandomly(Random random) {
         ocean.placeRandomly(fleet, random);
     }

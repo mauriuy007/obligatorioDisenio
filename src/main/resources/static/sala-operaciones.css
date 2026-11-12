@@ -1,5 +1,3 @@
-/* Estilos propios de la Sala de Operaciones; lo compartido está en comun.css */
-
 .resumen {
   display: grid;
   grid-template-columns: repeat(3, 1fr) auto;

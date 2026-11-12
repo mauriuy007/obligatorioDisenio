@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import uy.edu.ort.battleshipdemo.model.Boat;
 import uy.edu.ort.battleshipdemo.model.BoatType;
 
 public class BoatTypeDto {
@@ -22,6 +23,14 @@ public class BoatTypeDto {
         List<BoatTypeDto> rows = new ArrayList<>();
         for (BoatType boatType : boatTypes) {
             rows.add(new BoatTypeDto(boatType));
+        }
+        return rows;
+    }
+
+    public static List<BoatTypeDto> fromBoats(List<Boat> boats) {
+        List<BoatTypeDto> rows = new ArrayList<>();
+        for (Boat boat : boats) {
+            rows.add(new BoatTypeDto(boat.getType()));
         }
         return rows;
     }

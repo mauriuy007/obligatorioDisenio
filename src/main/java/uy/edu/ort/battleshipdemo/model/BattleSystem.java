@@ -20,7 +20,6 @@ public class BattleSystem {
     private List<TacticType> tacticTypes = new ArrayList<>();
     private Random random = new Random();
 
-    // quantities.get(i) es la cantidad de barcos del tipo boatTypes.get(i).
     public Battle createBattle(String place, TacticType tacticType, int width, int height,
             List<Integer> quantities) throws BattleshipException {
         validateDimensions(width, height);
@@ -33,7 +32,6 @@ public class BattleSystem {
         return battle;
     }
 
-    // Se valida antes de construir la batalla, para no armar océanos de tamaño inválido.
     private void validateDimensions(int width, int height) throws BattleshipException {
         if (width < MIN_CELLS || width > MAX_CELLS) {
             throw new BattleshipException(

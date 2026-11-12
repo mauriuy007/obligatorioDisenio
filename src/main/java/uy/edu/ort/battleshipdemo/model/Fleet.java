@@ -23,6 +23,33 @@ public class Fleet {
         }
     }
 
+    // Ordenados de mayor a menor tamaño.
+    public List<Boat> getUnplacedBoats() {
+        List<Boat> unplaced = new ArrayList<>();
+        for (Boat boat : boats) {
+            if (!boat.isPlaced()) {
+                unplaced.add(positionBySize(unplaced, boat), boat);
+            }
+        }
+        return unplaced;
+    }
+
+    private int positionBySize(List<Boat> sorted, Boat boat) {
+        int position = 0;
+        while (position < sorted.size() && sorted.get(position).getSize() >= boat.getSize()) {
+            position++;
+        }
+        return position;
+    }
+
+    public Boat getNextBoatToPlace() throws BattleshipException {
+        List<Boat> unplaced = getUnplacedBoats();
+        if (unplaced.isEmpty()) {
+            throw new BattleshipException("Ya posicionó todos sus barcos, puede librar la batalla");
+        }
+        return unplaced.get(0);
+    }
+
     public void validate() throws BattleshipException {
         if (boats.isEmpty()) {
             throw new BattleshipException("La flota debe tener al menos un barco");

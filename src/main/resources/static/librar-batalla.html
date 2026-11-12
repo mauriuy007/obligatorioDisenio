@@ -58,6 +58,7 @@
 
   <script type="module">
     import dispatcher from "./CommandDispatcher.js";
+    import SSECommandDispatcher from "./SSECommandDispatcher.js";
     import BattleShipBoard from "./BattleShipBoard.js";
 
     const mensaje = document.getElementById("mensaje");
@@ -70,6 +71,7 @@
 
     const view = dispatcher.registerView("librar-batalla", {
       urlInicio: "/fightBattle/connectedView",
+      urlCierre: "/fightBattle/disconnectedView",
       onError: (status, texto) => {
         mensaje.textContent = "Error " + status + ": " + texto;
       },
@@ -96,7 +98,6 @@
       altoMaximo: 520
     });
 
-    // La vista arma sus propios escuchadores: el presentador solo informa las dimensiones.
     view.handler("oceanSize", (oceano) => {
       board.inicializar({
         numeroCeldasVerticales: oceano.rows,
@@ -107,6 +108,12 @@
     });
 
     dispatcher.startView(view);
+
+    function conexionCerrada() {
+      mensaje.textContent = "Se perdió la conexión con el servidor, recargue la página para seguir viendo los cambios";
+    }
+
+    new SSECommandDispatcher("/fightBattle/registerSSE", dispatcher, conexionCerrada);
   </script>
 </body>
 

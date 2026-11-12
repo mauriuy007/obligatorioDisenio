@@ -22,6 +22,11 @@ public class WonStatus extends BattleStatus {
     }
 
     @Override
+    public void placeBoat(int row, int column, boolean horizontal) throws BattleshipException {
+        throw new BattleshipException("La batalla ya terminó");
+    }
+
+    @Override
     public void fire(int row, int column) throws BattleshipException {
         throw new BattleshipException("La batalla ya terminó");
     }

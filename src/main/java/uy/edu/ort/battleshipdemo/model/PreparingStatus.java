@@ -23,6 +23,11 @@ public class PreparingStatus extends BattleStatus {
     }
 
     @Override
+    public void placeBoat(int row, int column, boolean horizontal) throws BattleshipException {
+        getBattle().doPlaceBoat(row, column, horizontal);
+    }
+
+    @Override
     public void fire(int row, int column) throws BattleshipException {
         throw new BattleshipException("La batalla todavía está en preparación");
     }

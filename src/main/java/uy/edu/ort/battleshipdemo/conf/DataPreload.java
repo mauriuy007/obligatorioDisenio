@@ -16,8 +16,6 @@ import uy.edu.ort.battleshipdemo.model.Facade;
 import uy.edu.ort.battleshipdemo.model.Player;
 import uy.edu.ort.battleshipdemo.model.TacticType;
 
-// Datos de prueba: las batallas se crean con facade.createBattle (igual que en el CU02) y se juegan
-// con el modelo, así cada una queda en un estado consistente.
 @Component
 public class DataPreload implements CommandLineRunner {
 

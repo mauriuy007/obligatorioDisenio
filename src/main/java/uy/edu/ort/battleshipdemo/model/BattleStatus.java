@@ -2,7 +2,6 @@ package uy.edu.ort.battleshipdemo.model;
 
 import lombok.Getter;
 
-// Patrón State: cada estado decide qué acciones permite y a qué estado pasa la batalla después.
 public abstract class BattleStatus {
 
     @Getter
@@ -17,6 +16,8 @@ public abstract class BattleStatus {
     public abstract void startCombat() throws BattleshipException;
 
     public abstract void fire(int row, int column) throws BattleshipException;
+
+    public abstract void placeBoat(int row, int column, boolean horizontal) throws BattleshipException;
 
     public boolean isPreparing() {
         return false;
