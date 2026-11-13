@@ -75,8 +75,7 @@ public class Battle extends Observable {
         }
     }
 
-    // Si dos sesiones disparan a la vez, gana el primer disparo de la ronda.
-    public synchronized void fire(int row, int column) throws BattleshipException {
+    public void fire(int row, int column) throws BattleshipException {
         status.fire(row, column);
         notifyObservers(Events.ROUND_PLAYED);
     }
