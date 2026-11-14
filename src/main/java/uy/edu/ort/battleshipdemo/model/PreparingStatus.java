@@ -8,7 +8,7 @@ public class PreparingStatus extends BattleStatus {
 
     @Override
     public String getName() {
-        return "En preparación";
+        return StatusType.PREPARING.getName();
     }
 
     @Override

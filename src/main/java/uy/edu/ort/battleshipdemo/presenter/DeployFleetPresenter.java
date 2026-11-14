@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import uy.edu.ort.battleshipdemo.Command;
 import uy.edu.ort.battleshipdemo.Commands;
-import uy.edu.ort.battleshipdemo.ValorDto;
 import uy.edu.ort.battleshipdemo.dto.BattleDto;
 import uy.edu.ort.battleshipdemo.dto.BattleHeaderDto;
 import uy.edu.ort.battleshipdemo.dto.BoatTypeDto;
@@ -57,7 +56,7 @@ public class DeployFleetPresenter implements Observer {
 
         observe(facade.getBattle(battleDto.getPlace()));
         horizontal = true;
-        return deployState(Commands.create(oceanSize(), orientation()));
+        return Commands.create(oceanSize(), orientation(), battleHeader(), availableBoats(), actionLegend(), ownWaters());
     }
 
     @PostMapping("/disconnectedView")
@@ -71,12 +70,13 @@ public class DeployFleetPresenter implements Observer {
     public Commands placeBoat(@RequestParam int coordenadaVertical, @RequestParam int coordenadaHorizontal)
             throws BattleshipException {
         battle.placeBoat(coordenadaVertical, coordenadaHorizontal, horizontal);
-        return deployState(Commands.create());
+        return Commands.create(battleHeader(), availableBoats(), actionLegend(), ownWaters());
     }
 
     @PostMapping("/enemyWaters")
     public Commands enemyWaters() throws BattleshipException {
-        throw new BattleshipException("No puede ubicar barcos en aguas enemigas");
+        battle.placeBoatInEnemyWaters();
+        return Commands.create();
     }
 
     @PostMapping("/changeOrientation")
@@ -94,7 +94,7 @@ public class DeployFleetPresenter implements Observer {
     @Override
     public void update(Observable source, Object event) {
         if (event.equals(Battle.Events.BOAT_PLACED)) {
-            browserConnection.sendJSON(deployState(Commands.create()));
+            browserConnection.sendJSON(Commands.create(battleHeader(), availableBoats(), actionLegend(), ownWaters()));
         }
         if (event.equals(Battle.Events.COMBAT_STARTED)) {
             browserConnection.sendJSON(Commands.create(combatStarted()));
@@ -109,14 +109,6 @@ public class DeployFleetPresenter implements Observer {
         battle.addObserver(this);
     }
 
-    private Commands deployState(Commands commands) {
-        commands.add(battleHeader(), availableBoats(), actionLegend());
-        for (ValorDto value : OceanCellsDto.fromOcean(battle.getHuman().getOcean(), true)) {
-            commands.add(new Command("mostrarAguasPropias", value));
-        }
-        return commands;
-    }
-
     private Command oceanSize() {
         return new Command("oceanSize", new OceanSizeDto(battle));
     }
@@ -126,7 +118,7 @@ public class DeployFleetPresenter implements Observer {
     }
 
     private Command availableBoats() {
-        return new Command("availableBoats", BoatTypeDto.fromBoats(battle.getHuman().getFleet().getUnplacedBoats()));
+        return new Command("availableBoats", BoatTypeDto.fromBoats(battle.getUnplacedBoats()));
     }
 
     private Command orientation() {
@@ -134,13 +126,17 @@ public class DeployFleetPresenter implements Observer {
     }
 
     private Command actionLegend() {
-        List<Boat> unplaced = battle.getHuman().getFleet().getUnplacedBoats();
+        List<Boat> unplaced = battle.getUnplacedBoats();
         if (unplaced.isEmpty()) {
             return new Command("actionLegend", "Batalla preparada");
         }
         String orientationName = horizontal ? "Horizontal" : "Vertical";
         return new Command("actionLegend",
                 "Posicione su " + unplaced.get(0).getType().getName() + " en forma " + orientationName);
+    }
+
+    private Command ownWaters() {
+        return new Command("ownWaters", OceanCellsDto.fromOcean(battle.getHuman().getOcean(), true));
     }
 
     private Command combatStarted() {

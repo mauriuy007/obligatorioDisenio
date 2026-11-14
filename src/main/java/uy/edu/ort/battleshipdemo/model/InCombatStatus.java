@@ -8,7 +8,7 @@ public class InCombatStatus extends BattleStatus {
 
     @Override
     public String getName() {
-        return "En combate";
+        return StatusType.IN_COMBAT.getName();
     }
 
     @Override

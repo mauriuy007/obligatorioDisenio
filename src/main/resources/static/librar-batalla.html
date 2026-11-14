@@ -107,6 +107,14 @@
       });
     });
 
+    view.handler("ownWaters", (celdas) => {
+      celdas.forEach((celda) => board.mostrarAguasPropias(celda));
+    });
+
+    view.handler("enemyWaters", (celdas) => {
+      celdas.forEach((celda) => board.mostrarAguasEnemigas(celda));
+    });
+
     dispatcher.startView(view);
 
     function conexionCerrada() {

@@ -6,11 +6,6 @@ import java.util.List;
 public class SequentialTactic implements Tactic {
 
     @Override
-    public String getName() {
-        return "Secuencial";
-    }
-
-    @Override
     public Cell chooseTarget(Ocean ocean) throws BattleshipException {
         List<Cell> unshot = ocean.getUnshotCells();
         if (unshot.isEmpty()) {

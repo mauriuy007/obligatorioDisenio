@@ -1,8 +1,6 @@
 package uy.edu.ort.battleshipdemo.model;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import lombok.Getter;
 import uy.edu.ort.battleshipdemo.observer.Observable;
@@ -15,6 +13,9 @@ public class Battle extends Observable {
         ROUND_PLAYED
     }
 
+    private static final int MIN_CELLS = 6;
+    private static final int MAX_CELLS = 12;
+
     @Getter
     private String place;
     @Getter
@@ -25,16 +26,30 @@ public class Battle extends Observable {
     private Player human;
     @Getter
     private Machine machine;
-    private List<Round> rounds = new ArrayList<>();
+    private int playedRounds;
     private BattleStatus status;
 
-    public Battle(String place, TacticType tacticType, int width, int height, Fleet humanFleet, Fleet machineFleet) {
+    public Battle(String place, TacticType tacticType, int width, int height, Fleet humanFleet, Fleet machineFleet)
+            throws BattleshipException {
+        validateDimensions(width, height);
         this.place = place;
         this.width = width;
         this.height = height;
         this.human = new Player(humanFleet, width, height);
         this.machine = new Machine(machineFleet, width, height, TacticFactory.createTactic(tacticType));
         this.status = new PreparingStatus(this);
+    }
+
+    // Se valida antes de crear los océanos, para no armar celdas de medidas inválidas.
+    private void validateDimensions(int width, int height) throws BattleshipException {
+        if (width < MIN_CELLS || width > MAX_CELLS) {
+            throw new BattleshipException(
+                    "La cantidad de celdas horizontales debe estar entre " + MIN_CELLS + " y " + MAX_CELLS);
+        }
+        if (height < MIN_CELLS || height > MAX_CELLS) {
+            throw new BattleshipException(
+                    "La cantidad de celdas verticales debe estar entre " + MIN_CELLS + " y " + MAX_CELLS);
+        }
     }
 
     public void validate() throws BattleshipException {
@@ -47,8 +62,8 @@ public class Battle extends Observable {
         }
     }
 
-    public void deployMachineFleet(Random random) {
-        machine.deployRandomly(random);
+    public void deployMachineFleet() {
+        machine.deployRandomly();
     }
 
     public void changeStatus(StatusType type) {
@@ -62,6 +77,10 @@ public class Battle extends Observable {
 
     protected void doPlaceBoat(int row, int column, boolean horizontal) throws BattleshipException {
         human.placeNextBoat(row, column, horizontal);
+    }
+
+    public void placeBoatInEnemyWaters() throws BattleshipException {
+        throw new BattleshipException("No puede ubicar barcos en aguas enemigas");
     }
 
     public void startCombat() throws BattleshipException {
@@ -81,11 +100,19 @@ public class Battle extends Observable {
     }
 
     protected void doFire(int row, int column) throws BattleshipException {
-        Round round = new Round(new Shot(machine.receiveShot(row, column)));
-        rounds.add(round);
+        machine.receiveShot(row, column);
+        playedRounds++;
         if (!machine.isDefeated()) {
-            round.setMachineShot(new Shot(machine.fireAt(human)));
+            machine.fireAt(human);
         }
+    }
+
+    public void fireAtOwnWaters() throws BattleshipException {
+        throw new BattleshipException("No puede disparar a sus propias aguas");
+    }
+
+    public List<Boat> getUnplacedBoats() {
+        return human.getUnplacedBoats();
     }
 
     public boolean hasPlace(String place) {
@@ -93,7 +120,7 @@ public class Battle extends Observable {
     }
 
     public int getRoundNumber() {
-        return status.roundNumber(rounds.size());
+        return status.roundNumber(playedRounds);
     }
 
     public String getStatusName() {

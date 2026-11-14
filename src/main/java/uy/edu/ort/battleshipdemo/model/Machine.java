@@ -9,8 +9,8 @@ public class Machine extends Player {
         this.tactic = tactic;
     }
 
-    public Cell fireAt(Player opponent) throws BattleshipException {
+    public void fireAt(Player opponent) throws BattleshipException {
         Cell target = tactic.chooseTarget(opponent.getOcean());
-        return opponent.receiveShot(target.getRow(), target.getColumn());
+        opponent.receiveShot(target.getRow(), target.getColumn());
     }
 }

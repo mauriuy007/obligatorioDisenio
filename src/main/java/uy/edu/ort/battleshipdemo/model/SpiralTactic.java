@@ -8,11 +8,6 @@ import java.util.List;
 public class SpiralTactic implements Tactic {
 
     @Override
-    public String getName() {
-        return "Espiral";
-    }
-
-    @Override
     public Cell chooseTarget(Ocean ocean) throws BattleshipException {
         for (Cell cell : spiralOrder(ocean)) {
             if (!cell.isShot()) {

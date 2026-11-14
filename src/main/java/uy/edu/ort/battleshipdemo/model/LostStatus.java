@@ -8,7 +8,7 @@ public class LostStatus extends BattleStatus {
 
     @Override
     public String getName() {
-        return "Perdida";
+        return StatusType.LOST.getName();
     }
 
     @Override

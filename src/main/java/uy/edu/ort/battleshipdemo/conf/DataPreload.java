@@ -2,25 +2,21 @@ package uy.edu.ort.battleshipdemo.conf;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import uy.edu.ort.battleshipdemo.model.Battle;
 import uy.edu.ort.battleshipdemo.model.BattleshipException;
-import uy.edu.ort.battleshipdemo.model.Boat;
 import uy.edu.ort.battleshipdemo.model.BoatType;
 import uy.edu.ort.battleshipdemo.model.Cell;
 import uy.edu.ort.battleshipdemo.model.Facade;
-import uy.edu.ort.battleshipdemo.model.Player;
 import uy.edu.ort.battleshipdemo.model.TacticType;
 
 @Component
 public class DataPreload implements CommandLineRunner {
 
     private Facade facade = Facade.getInstance();
-    private Random random = new Random();
 
     private TacticType sequential = new TacticType("Secuencial");
     private TacticType spiral = new TacticType("Espiral");
@@ -54,7 +50,7 @@ public class DataPreload implements CommandLineRunner {
     // En combate: tres rondas jugadas.
     private void preloadInCombatBattle() throws BattleshipException {
         Battle battle = createBattle("Atlántico Sur", 12, 8, spiral, quantities(0, 1, 1, 0, 1));
-        battle.getHuman().deployRandomly(random);
+        battle.getHuman().deployRandomly();
         battle.startCombat();
         fireAt(battle, true);
         fireAt(battle, false);
@@ -63,7 +59,7 @@ public class DataPreload implements CommandLineRunner {
 
     // Ganada: el humano dispara solo a barcos enemigos, así hunde la flota antes que la máquina.
     private void preloadWonBattle(Battle battle) throws BattleshipException {
-        battle.getHuman().deployRandomly(random);
+        battle.getHuman().deployRandomly();
         battle.startCombat();
         while (!battle.isWon()) {
             fireAt(battle, true);
@@ -73,11 +69,9 @@ public class DataPreload implements CommandLineRunner {
     // Perdida: la flota humana queda en el centro, donde empieza la espiral, y el humano solo dispara al agua.
     private void preloadLostBattle() throws BattleshipException {
         Battle battle = createBattle("Mar Caribe", 12, 12, spiral, quantities(1, 1, 0, 1, 0));
-        Player human = battle.getHuman();
-        List<Boat> boats = human.getFleet().getBoats();
-        human.placeBoat(boats.get(0), 6, 3, true);
-        human.placeBoat(boats.get(1), 8, 3, true);
-        human.placeBoat(boats.get(2), 4, 4, true);
+        battle.placeBoat(6, 3, true);
+        battle.placeBoat(8, 3, true);
+        battle.placeBoat(4, 4, true);
         battle.startCombat();
         while (!battle.isLost()) {
             fireAt(battle, false);

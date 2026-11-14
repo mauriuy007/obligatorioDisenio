@@ -12,11 +12,6 @@ public class HuntAndAttackTactic implements Tactic {
     private Random random = new Random();
 
     @Override
-    public String getName() {
-        return "Caza y ataque";
-    }
-
-    @Override
     public Cell chooseTarget(Ocean ocean) throws BattleshipException {
         List<Cell> candidates = attack(ocean);
         if (candidates.isEmpty()) {

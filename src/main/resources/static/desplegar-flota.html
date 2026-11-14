@@ -121,6 +121,10 @@
       });
     });
 
+    view.handler("ownWaters", (celdas) => {
+      celdas.forEach((celda) => board.mostrarAguasPropias(celda));
+    });
+
     view.handler("availableBoats", (barcos) => {
       const lista = document.getElementById("barcosDisponibles");
       lista.innerHTML = "";

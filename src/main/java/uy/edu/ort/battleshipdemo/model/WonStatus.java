@@ -8,7 +8,7 @@ public class WonStatus extends BattleStatus {
 
     @Override
     public String getName() {
-        return "Ganada";
+        return StatusType.WON.getName();
     }
 
     @Override

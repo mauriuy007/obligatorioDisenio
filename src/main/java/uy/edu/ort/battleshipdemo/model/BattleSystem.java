@@ -8,8 +8,6 @@ import lombok.Getter;
 
 public class BattleSystem {
 
-    private static final int MIN_CELLS = 6;
-    private static final int MAX_CELLS = 12;
     private static final int RANDOM_PLACE_LENGTH = 6;
 
     @Getter
@@ -22,25 +20,13 @@ public class BattleSystem {
 
     public Battle createBattle(String place, TacticType tacticType, int width, int height,
             List<Integer> quantities) throws BattleshipException {
-        validateDimensions(width, height);
         String battlePlace = place == null || place.isBlank() ? randomPlace() : place.trim();
         Battle battle = new Battle(battlePlace, tacticType, width, height,
                 createFleet(quantities), createFleet(quantities));
         battle.validate();
-        battle.deployMachineFleet(random);
+        battle.deployMachineFleet();
         addBattle(battle);
         return battle;
-    }
-
-    private void validateDimensions(int width, int height) throws BattleshipException {
-        if (width < MIN_CELLS || width > MAX_CELLS) {
-            throw new BattleshipException(
-                    "La cantidad de celdas horizontales debe estar entre " + MIN_CELLS + " y " + MAX_CELLS);
-        }
-        if (height < MIN_CELLS || height > MAX_CELLS) {
-            throw new BattleshipException(
-                    "La cantidad de celdas verticales debe estar entre " + MIN_CELLS + " y " + MAX_CELLS);
-        }
     }
 
     private void addBattle(Battle battle) throws BattleshipException {
@@ -62,14 +48,20 @@ public class BattleSystem {
     }
 
     private String randomPlace() {
-        String place;
-        do {
-            place = "";
-            for (int i = 0; i < RANDOM_PLACE_LENGTH; i++) {
-                place = place + (char) ('A' + random.nextInt(26));
-            }
-        } while (existsPlace(place));
+        String place = randomLetters();
+        while (existsPlace(place)) {
+            place = randomLetters();
+        }
         return place;
+    }
+
+    private String randomLetters() {
+        String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String text = "";
+        for (int i = 0; i < RANDOM_PLACE_LENGTH; i++) {
+            text = text + letters.charAt(random.nextInt(letters.length()));
+        }
+        return text;
     }
 
     public void addBoatType(BoatType boatType) {

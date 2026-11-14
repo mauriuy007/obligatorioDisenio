@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import uy.edu.ort.battleshipdemo.model.Battle;
-import uy.edu.ort.battleshipdemo.model.Fleet;
+import uy.edu.ort.battleshipdemo.model.Player;
 
 public class BattleRowDto {
 
@@ -24,8 +24,8 @@ public class BattleRowDto {
         this.place = battle.getPlace();
         this.dimensions = battle.getWidth() + " x " + battle.getHeight();
         this.status = battle.getStatusName();
-        this.ownFleetIntegrity = integrity(battle.getHuman().getFleet());
-        this.enemyFleetIntegrity = integrity(battle.getMachine().getFleet());
+        this.ownFleetIntegrity = integrity(battle.getHuman());
+        this.enemyFleetIntegrity = integrity(battle.getMachine());
     }
 
     public static List<BattleRowDto> fromList(List<Battle> battles) {
@@ -36,7 +36,7 @@ public class BattleRowDto {
         return rows;
     }
 
-    private String integrity(Fleet fleet) {
-        return fleet.getHealthyParts() + "/" + fleet.getTotalSize();
+    private String integrity(Player player) {
+        return player.getHealthyParts() + "/" + player.getFleetSize();
     }
 }

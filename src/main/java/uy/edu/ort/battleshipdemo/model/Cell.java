@@ -23,6 +23,10 @@ public class Cell {
         this.boat = boat;
     }
 
+    public boolean isAt(int row, int column) {
+        return this.row == row && this.column == column;
+    }
+
     public boolean hasBoat() {
         return boat != null;
     }

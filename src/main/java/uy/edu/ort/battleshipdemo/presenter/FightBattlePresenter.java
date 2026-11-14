@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import uy.edu.ort.battleshipdemo.Command;
 import uy.edu.ort.battleshipdemo.Commands;
-import uy.edu.ort.battleshipdemo.ValorDto;
 import uy.edu.ort.battleshipdemo.dto.BattleDto;
 import uy.edu.ort.battleshipdemo.dto.BattleHeaderDto;
 import uy.edu.ort.battleshipdemo.dto.OceanCellsDto;
@@ -52,7 +51,7 @@ public class FightBattlePresenter implements Observer {
             return Commands.create(battleNotSelected());
 
         observe(facade.getBattle(battleDto.getPlace()));
-        return battleState(Commands.create(oceanSize()));
+        return Commands.create(oceanSize(), battleHeader(), casualties(), ownWaters(), enemyWaters());
     }
 
     @PostMapping("/disconnectedView")
@@ -66,18 +65,19 @@ public class FightBattlePresenter implements Observer {
     public Commands fire(@RequestParam int coordenadaVertical, @RequestParam int coordenadaHorizontal)
             throws BattleshipException {
         battle.fire(coordenadaVertical, coordenadaHorizontal);
-        return battleState(Commands.create());
+        return Commands.create(battleHeader(), casualties(), ownWaters(), enemyWaters());
     }
 
     @PostMapping("/fireAtOwnWaters")
     public Commands fireAtOwnWaters() throws BattleshipException {
-        throw new BattleshipException("No puede disparar a sus propias aguas");
+        battle.fireAtOwnWaters();
+        return Commands.create();
     }
 
     @Override
     public void update(Observable source, Object event) {
         if (event.equals(Battle.Events.ROUND_PLAYED) || event.equals(Battle.Events.COMBAT_STARTED)) {
-            browserConnection.sendJSON(battleState(Commands.create()));
+            browserConnection.sendJSON(Commands.create(battleHeader(), casualties(), ownWaters(), enemyWaters()));
         }
     }
 
@@ -87,13 +87,6 @@ public class FightBattlePresenter implements Observer {
         }
         battle = selected;
         battle.addObserver(this);
-    }
-
-    private Commands battleState(Commands commands) {
-        commands.add(battleHeader(), casualties());
-        addOwnWaters(commands);
-        addEnemyWaters(commands);
-        return commands;
     }
 
     private Command oceanSize() {
@@ -120,15 +113,12 @@ public class FightBattlePresenter implements Observer {
         return new Command("bajasEnemigas", text);
     }
 
-    private void addOwnWaters(Commands commands) {
-        for (ValorDto value : OceanCellsDto.fromOcean(battle.getHuman().getOcean(), true)) {
-            commands.add(new Command("mostrarAguasPropias", value));
-        }
+    private Command ownWaters() {
+        return new Command("ownWaters", OceanCellsDto.fromOcean(battle.getHuman().getOcean(), true));
     }
 
-    private void addEnemyWaters(Commands commands) {
-        for (ValorDto value : OceanCellsDto.fromOcean(battle.getMachine().getOcean(), battle.revealsEnemyFleet())) {
-            commands.add(new Command("mostrarAguasEnemigas", value));
-        }
+    private Command enemyWaters() {
+        return new Command("enemyWaters",
+                OceanCellsDto.fromOcean(battle.getMachine().getOcean(), battle.revealsEnemyFleet()));
     }
 }

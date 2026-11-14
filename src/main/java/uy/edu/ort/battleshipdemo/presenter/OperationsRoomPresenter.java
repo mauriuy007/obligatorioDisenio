@@ -45,7 +45,7 @@ public class OperationsRoomPresenter implements Observer {
     @PostMapping("/connectedView")
     public Commands connectedView() {
         facade.addObserver(this);
-        return operationsSummary();
+        return Commands.create(wonBattles(), lostBattles(), successRate(), successDetail(), battleList());
     }
 
     @PostMapping("/disconnectedView")
@@ -63,12 +63,8 @@ public class OperationsRoomPresenter implements Observer {
     @Override
     public void update(Observable source, Object event) {
         if (event.equals(Facade.Events.NEW_BATTLE) || event.equals(Facade.Events.BATTLE_UPDATED)) {
-            browserConnection.sendJSON(operationsSummary());
+            browserConnection.sendJSON(Commands.create(wonBattles(), lostBattles(), successRate(), successDetail(), battleList()));
         }
-    }
-
-    private Commands operationsSummary() {
-        return Commands.create(wonBattles(), lostBattles(), successRate(), successDetail(), battleList());
     }
 
     private Command selectedBattle(Battle battle) {

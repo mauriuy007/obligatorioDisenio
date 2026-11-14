@@ -6,7 +6,6 @@ import java.util.Random;
 
 import lombok.Getter;
 
-// Las celdas se guardan fila por fila: la celda (row, column) está en la posición row * width + column.
 public class Ocean {
 
     @Getter
@@ -15,6 +14,7 @@ public class Ocean {
     private int height;
     @Getter
     private List<Cell> cells = new ArrayList<>();
+    private Random random = new Random();
 
     public Ocean(int width, int height) {
         this.width = width;
@@ -35,7 +35,12 @@ public class Ocean {
     }
 
     public Cell getCell(int row, int column) {
-        return cells.get(row * width + column);
+        for (Cell cell : cells) {
+            if (cell.isAt(row, column)) {
+                return cell;
+            }
+        }
+        return null;
     }
 
     public boolean isUnshot(int row, int column) {
@@ -97,13 +102,13 @@ public class Ocean {
         }
     }
 
-    public void placeRandomly(Fleet fleet, Random random) {
-        while (!tryPlaceRandomly(fleet, random)) {
+    public void placeRandomly(Fleet fleet) {
+        while (!tryPlaceRandomly(fleet)) {
             clear();
         }
     }
 
-    private boolean tryPlaceRandomly(Fleet fleet, Random random) {
+    private boolean tryPlaceRandomly(Fleet fleet) {
         for (Boat boat : fleet.getBoats()) {
             List<Position> options = validPositions(boat);
             if (options.isEmpty()) {
@@ -124,12 +129,13 @@ public class Ocean {
     }
 
     private void addIfValid(Boat boat, Position position, List<Position> positions) {
-        try {
-            validatePlacement(boat, position);
+        if (isValidPlacement(boat, position)) {
             positions.add(position);
-        } catch (BattleshipException e) {
-            // posición inválida: no se agrega
         }
+    }
+
+    private boolean isValidPlacement(Boat boat, Position position) {
+        return fits(boat, position) && !overlaps(boat, position) && !touches(boat, position);
     }
 
     private void clear() {
